@@ -5,7 +5,7 @@ def get_axis(min_range, max_range):
     axis = {
         "autorange": False,
         "range": (min_range, max_range),
-        "showgrid": False,
+        "showgrid": True,
         "zeroline": False,
         "showline": False,
         "title": "",

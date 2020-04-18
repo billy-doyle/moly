@@ -52,6 +52,18 @@ QCElemental molecules
  fig.add_molecule("caffeine", molecule)
  fig.show()
  ```
+
+ <br>
+
+ 
+* ### Basic Slider
+*Define a figure and add a blob with a slider for iso values to it.*
+ 
+ ```
+ fig = moly.Figure()
+ fig.add_blob_slider('Psi_a_1_1-Ag.cube', iso_slider=(0.001, 0.401, 0.05), style="wireframe")
+ fig.show()
+ ```
  
 <br>
   

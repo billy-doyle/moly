@@ -53,6 +53,20 @@ def get_surface(grid, spacing, origin):
     })
     return mesh
 
+
+def get_cube(path_to_file):
+    cubes = []
+    meta = []
+
+    cube_np, details = cube_to_array(path_to_file)
+    details.update({"name":path_to_file[0:-5]})
+    cubes.append(cube_np)
+    meta.append(details)
+        
+    return cubes, meta
+
+
+
 def get_cubes(folder):
     cube_list = [f for f in glob.glob(folder+"/*.cube")]
     if not cube_list:
@@ -61,7 +75,7 @@ def get_cubes(folder):
     meta = []
     for cube_file in cube_list:
         cube_np, details = cube_to_array(cube_file)
-        details.update({"name":cube_file[2:-5]})
+        details.update({"name":cube_file[0:-5]})
         cubes.append(cube_np)
         meta.append(details)
         
@@ -202,5 +216,3 @@ def _getline(cube):
     """
     l = cube.readline().strip().split()
     return int(l[0]), list(map(float, l[1:]))
-
-
