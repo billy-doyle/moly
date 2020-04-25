@@ -175,7 +175,7 @@ class Figure():
             one_step["args"][1][i] = True  # Toggle i'th trace to "visible"
             steps.append(one_step)
 
-        print(steps)
+        # print(steps)
 
         sliders = [dict(
             active=10,
