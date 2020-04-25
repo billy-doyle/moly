@@ -13,6 +13,7 @@ from ..molecule.shapes import rotation_matrix
 
 from ..layers.bonds import get_bond_mesh
 from ..layers.geometry import get_sphere_mesh
+from ..layers.slider import orbital_trace
 from ..layers.cube import get_cubes, cube_to_molecule, get_cubes, get_cubes_traces, get_buttons, get_surface, get_buttons_wfn, get_cube
 from .layouts import get_layout
 
@@ -161,44 +162,20 @@ class Figure():
         cubes, details = get_cube(path_to_file)
         geometry, symbols, atomic_numbers, spacing, origin = cube_to_molecule(details[0]["name"]+".cube")
         bonds = qcel.molutil.guess_connectivity(symbols, geometry)
-        add_bonds(geometry, symbols, bonds, self.fig, style, self.surface)
-        add_atoms(geometry, atomic_numbers, symbols, self.fig, style, self.surface)
+        # add_bonds(geometry, symbols, bonds, self.fig, style, self.surface)
+        # add_atoms(geometry, atomic_numbers, symbols, self.fig, style, self.surface)
 
         iso_min, iso_max, st = iso_slider
         iso_steps = np.arange(iso_min, iso_max + st, st)
 
-        x,y,z = np.mgrid[:cubes[0].shape[0], :cubes[0].shape[1], :cubes[0].shape[2]]
-        
-        x_r = x * spacing[0] + origin[0]
-        y_r = y * spacing[1] + origin[1]
-        z_r = z * spacing[2] + origin[2]
-
-        for step in np.arange(iso_min, iso_max + st, st):
-            self.fig.add_trace(
-                go.Isosurface(
-                visible = False,
-                x = x_r.flatten(),
-                y = y_r.flatten(), 
-                z = z_r.flatten(), 
-                value = cubes[0].flatten(),
-                surface_count = 2,
-                colorscale = 'Portland_r',
-                showscale=False,
-                isomin=-1 * step,
-                isomax= 1 * step,
-                opacity = 0.2))
-
-
-        self.fig.data[0].visible = True
-
         steps = []
-        for i in range(len(self.fig.data)):
-            step = dict(
-                method="restyle",
-                args=["visible", [False] * len(self.fig.data)],
-            )
-            step["args"][1][i] = True  # Toggle i'th trace to "visible"
-            steps.append(step)
+        for i, step in enumerate(iso_steps):
+            self.fig.add_trace(orbital_trace(cubes, step, spacing, origin))
+            one_step = dict(method="restyle", args=["visible", [False] * (len(iso_steps))],)
+            one_step["args"][1][i] = True  # Toggle i'th trace to "visible"
+            steps.append(one_step)
+
+        print(steps)
 
         sliders = [dict(
             active=10,
@@ -207,14 +184,16 @@ class Figure():
             steps=steps
         )]
 
-        self.fig.update_layout(get_layout(geometry, self.resolution, self.max_range, self.min_range, overage=4.0),
+        self.fig.update_layout(get_layout(geometry, self.resolution, self.min_range, self.max_range, overage=4.0),
             sliders=sliders
         )
 
-        #print(len(list(iso_steps)))
-
         for i, ival in enumerate(list(iso_steps), start = 0):
             self.fig['layout']['sliders'][0]['steps'][i]['label'] = str(ival)[:5]
+
+        self.fig.data[0].visible = True
+
+        # print(self.fig.data)
 
 
 

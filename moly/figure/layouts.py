@@ -3,8 +3,8 @@ import numpy as np
 def get_axis(min_range, max_range):
 
     axis = {
-        "autorange": False,
-        "range": (min_range, max_range),
+        "autorange": True,
+        #"range": (min_range, max_range),
         "showgrid": True,
         "zeroline": False,
         "showline": False,
